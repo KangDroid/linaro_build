@@ -249,11 +249,6 @@ fi
 if echo "$BUILD_ARCH" | grep -q '64' ; then
   info "Use 64-bit Build environment"
   BUILD_HOST=x86_64-linux-gnu
-  ABI="32"
-  CFLAGS="-m32"
-  CXXFLAGS="-m32"
-  LDFLAGS="-L/usr/lib32"
-  export ABI CFLAGS CXXFLAGS LDFLAGS
 else
   info "Use 32-bit Build environment"
   BUILD_HOST=i686-unknown-linux-gnu
