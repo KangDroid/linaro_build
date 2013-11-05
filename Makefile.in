@@ -437,8 +437,6 @@ stmp-build-host-libbfd: stmp-config-host-libbfd
 	$(STAMP) $@
 # Also include libintl.a.  We have to do this manully since the
 # source of libintl in binutils is modified to not install the library.
-# We build with -m32 always.  To avoid installing libiberty.a into /lib32,
-# we need to manually install the archive.  This will need to be cleaned up.
 install-host-libbfd: stmp-build-host-libbfd install-target-binutils
 	$(MAKE) -C libbfd-${BINUTILS_VERSION}/bfd install \
 		bfdlibdir=$(libdir) bfdincludedir=$(includedir) && \
@@ -575,8 +573,8 @@ define config-gcc =
 	 export CFLAGS_FOR_TARGET="$(CFLAGS_FOR_TARGET)" ; \
 	 export CXXFLAGS_FOR_TARGET="$(CXXFLAGS_FOR_TARGET)" ; \
 	 export LDFLAGS_FOR_TARGET="$(LDFLAGS_FOR_TARGET)" ; \
-	 export CFLAGS="-O2 -m32" ; \
-	 export CXXFLAGS="-O2 -m32" ; \
+	 export CFLAGS="-O2" ; \
+	 export CXXFLAGS="-O2" ; \
 	 $(call find-package-srcdir, $(GCC_VERSION))/configure \
 	  $(GCC_CONFIG_ARGS) --target=$$TARGET --enable-threads --enable-tls $(2)) && \
 	$(STAMP) $@
@@ -629,8 +627,8 @@ stmp-config-bootstrap-gcc: config.status stmp-install-host-ppl stmp-build-target
 	 export CFLAGS_FOR_TARGET="$(CFLAGS_FOR_TARGET)" ; \
 	 export CXXFLAGS_FOR_TARGET="$(CXXFLAGS_FOR_TARGET)" ; \
 	 export LDFLAGS_FOR_TARGET="$(LDFLAGS_FOR_TARGET)" ; \
-	 export CFLAGS="-O2 -m32" ; \
-	 export CXXFLAGS="-O2 -m32" ; \
+	 export CFLAGS="-O2" ; \
+	 export CXXFLAGS="-O2" ; \
 	 $(call find-package-srcdir, $(GCC_VERSION))/configure \
 	  $(GCC_CONFIG_ARGS) --target=$$TARGET --enable-threads --enable-tls --disable-libgomp --disable-libstdc__-v3 --disable-libitm --disable-libsanitizer --disable-libatomic) && \
 	$(STAMP) $@
@@ -678,8 +676,8 @@ stmp-config-target-gcc: config.status stmp-install-host-ppl stmp-patch-libgomp-f
 	 export CFLAGS_FOR_TARGET="$(CFLAGS_FOR_TARGET) -fexceptions" ; \
 	 export CXXFLAGS_FOR_TARGET="$(CXXFLAGS_FOR_TARGET) -frtti" ; \
 	 export LDFLAGS_FOR_TARGET="$(LDFLAGS_FOR_TARGET)" ; \
-	 export CFLAGS="-O2 -m32" ; \
-	 export CXXFLAGS="-O2 -m32" ; \
+	 export CFLAGS="-O2" ; \
+	 export CXXFLAGS="-O2" ; \
 	 $(call find-package-srcdir, $(GCC_VERSION))/configure \
 	  $(GCC_CONFIG_ARGS) --target=$$TARGET --enable-threads --enable-tls --enable-libgomp --disable-libitm --disable-libsanitizer --disable-libatomic --disable-libstdc__-v3) && \
 	$(STAMP) $@
@@ -734,8 +732,8 @@ stmp-config-generic-target-gcc: config.status stmp-install-host-ppl stmp-build-t
 	 export CFLAGS_FOR_TARGET="$(CFLAGS_FOR_TARGET)" ; \
 	 export CXXFLAGS_FOR_TARGET="$(CXXFLAGS_FOR_TARGET)" ; \
 	 export LDFLAGS_FOR_TARGET="$(LDFLAGS_FOR_TARGET)" ; \
-	 export CFLAGS="-O2 -m32" ; \
-	 export CXXFLAGS="-O2 -m32" ; \
+	 export CFLAGS="-O2" ; \
+	 export CXXFLAGS="-O2" ; \
 	 $(call find-package-srcdir, $(GCC_VERSION))/configure \
 	  $(GCC_CONFIG_ARGS) --target=$$TARGET --enable-threads --enable-tls --disable-libgomp --disable-libstdc__-v3 --disable-libitm --disable-libsanitizer --disable-libatomic) && \
 	$(STAMP) $@
@@ -911,8 +909,8 @@ stmp-config-host-ppl: config.status stmp-install-host-gmp
 	 mkdir ${PPL_VERSION}) && \
 	($(canadian_env) \
 	 cd ${PPL_VERSION} ; \
-         export CFLAGS="${CFLAGS} -m32 -I$(GMP_DIR)/include" ; \
-         export CXXFLAGS="${CFLAGS} -m32 -I$(GMP_DIR)/include" ; \
+         export CFLAGS="${CFLAGS} -I$(GMP_DIR)/include" ; \
+         export CXXFLAGS="${CFLAGS} -I$(GMP_DIR)/include" ; \
 	$(call find-package-srcdir, ${PPL_VERSION})/configure \
 	 $(PPL_CONFIG_ARGS)) && \
 	$(STAMP) $@
