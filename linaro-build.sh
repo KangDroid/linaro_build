@@ -13,7 +13,6 @@
 # General Public License for more details.
 
 ARG_PREFIX_DIR=/tmp/android-toolchain-eabi
-ARG_TOOLCHAIN_SRC_DIR=${PWD%/build}
 
 ARG_LINARO_GCC_SRC_DIR=
 ARG_WGET_LINARO_GCC_SRC=
@@ -54,8 +53,8 @@ usage() {
   echo "Valid options (defaults are in brackets)"
   echo "  --prefix=<path>             Specify installation path [/tmp/android-toolchain-eabi]"
   echo "  --toolchain-src=<path>      Toolchain source directory [`dirname $PWD`]"
-  echo "  --with-gcc=<path>           Specify GCC source (support: directory, bzr, url)"
-  echo "  --with-gdb=<path>           Specify gdb source (support: directory, bzr, url)"
+  echo "  --with-gcc=<path>           Specify GCC source (support: directory, bzr, git, url)"
+  echo "  --with-gdb=<path>           Specify gdb source (support: directory, bzr, git, url)"
   echo "  --with-sysroot=<path>       Specify SYSROOT directory"
   echo "  --apply-gcc-patch=<yes|no>  Apply Linaro's extra gcc-patches [yes]"
   echo "  --help                      Print this help message"
@@ -81,6 +80,38 @@ downloadFromBZR() {
   else
     info "$dir already exists, doing bzr update"
     (cd $dir; bzr update)
+  fi
+}
+
+# $1 - package name (gcc, gdb, etc)
+# $2 - value of ARG_WITH_package (git://*)
+downloadFromGIT() {
+  local package=$1
+  local url=$2
+  local version=$3
+  local branch=master
+  if echo $url |grep -q '#'; then
+    branch=$(echo $url |cut -d# -f2)
+    url=$(echo $url |cut -d# -f1)
+  fi
+
+  local PACKAGE_NAME=`echo $package | tr "[:lower:]" "[:upper:]"`
+  eval "ARG_LINARO_${PACKAGE_NAME}_SRC_DIR=$package-$version"
+
+  dir=${ARG_TOOLCHAIN_SRC_DIR}/$package/$package-$version
+  if [ ! -d "$dir" ]; then
+    info "Use git to clone ${url}"
+    echo git clone ${url} $dir
+    git clone ${url} $dir
+    [ $? -ne 0 ] && error "git ${url} fails."
+    if [ $branch != master ]; then
+      cd $dir
+      git checkout -b $branch origin/$branch
+      cd ..
+    fi
+  else
+    info "$dir already exists, doing git pull"
+    (cd $dir; git pull)
   fi
 }
 
@@ -122,6 +153,18 @@ getPackage() {
       package=${package%%-*}
       info "Detected package \"$package\" and version \"$version\" for $1 bzr repo"
       ;;
+    git:*|ssh://*|http://git.*|https://git.*)
+      package=$(basename $1)
+      if echo $package |grep -q '#'; then
+        version=$(echo $package |cut -d# -f2)
+	package=$(echo $package |cut -d# -f1)
+      else
+        # Let's take a good guess: This is gcc master branch, so it
+	# should be 4.9 for now...
+	version=4.9
+      fi
+      package=${package/.git/}
+      ;;
     *)
       package=$(basename $1)
       version=${package#*-}
@@ -138,7 +181,10 @@ getPackage() {
     lp:*) # bzr clone lp:gcc-linaro
       downloadFromBZR $package $1 $version
       ;;
-    http://*) # snapshot URL
+    git:*|ssh://*|http://git.*|https://git.*) # git URL
+      downloadFromGIT $package $1 $version
+      ;;
+    http://*|https://*) # snapshot URL
       # http://launchpad.net/gcc-linaro/4.5/4.5-2011.04-0/+download/gcc-linaro-4.5-2011.04-0.tar.bz2
       downloadFromHTTP $package $1
       ;;
