@@ -277,8 +277,10 @@ if [ "x${ARG_APPLY_PATCH}" = "xyes" ]; then
   for FILE in `ls ${ARG_TOOLCHAIN_SRC_DIR}/gcc-patches/${sub_gcc_ver} 2>/dev/null` ; do
     if [ ! -f ${FILE}-patch.log ]; then
       note "Apply patch: ${FILE}"
-      git apply ${ARG_TOOLCHAIN_SRC_DIR}/gcc-patches/${sub_gcc_ver}/${FILE} 2>&1 | \
-        tee "${FILE}-patch.log"
+      if ! git apply ${ARG_TOOLCHAIN_SRC_DIR}/gcc-patches/${sub_gcc_ver}/${FILE} 2>&1 >"${FILE}-patch.log"; then
+        cat "${FILE}-patch.log"
+        error "${FILE} failed to apply. Please fix."
+      fi
     fi
   done
   cd -
