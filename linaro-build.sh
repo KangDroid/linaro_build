@@ -272,6 +272,7 @@ done
 
 if [ "x${ARG_APPLY_PATCH}" = "xyes" ]; then
   sub_gcc_ver="`echo ${ARG_LINARO_GCC_VER} | grep -o '4\.\([5-9]\|[1-9][0-9]\)'`"
+  [ -e ${ARG_TOOLCHAIN_SRC_DIR}/gcc/${ARG_LINARO_GCC_SRC_DIR}/gcc/BASE-VER ] && sub_gcc_ver="`cat ${ARG_TOOLCHAIN_SRC_DIR}/gcc/${ARG_LINARO_GCC_SRC_DIR}/gcc/BASE-VER |cut -d. -f1-2`"
   note "Will apply patches in toolchain/gcc-patches/${sub_gcc_ver}"
   cd ${ARG_TOOLCHAIN_SRC_DIR}/gcc/${ARG_LINARO_GCC_SRC_DIR} &&
   for FILE in `ls ${ARG_TOOLCHAIN_SRC_DIR}/gcc-patches/${sub_gcc_ver} 2>/dev/null` ; do
