@@ -224,14 +224,6 @@ ifeq ($(generic_target),aarch64-unknown-)
 generic_target := aarch64-none-elf
 endif
 
-ifeq ($(target_cpu),aarch64)
-# No bionic or gdb for aarch64 yet...
-build: build-target-binutils build-generic-target-binutils build-host-libbfd \
-	build-bootstrap-gcc build-generic-target-gcc
-
-install: install-target-binutils install-generic-target-binutils \
-	install-host-libbfd install-bootstrap-gcc install-generic-target-gcc
-else
 ifeq ($(GCC_MIN_VERSION_4_5_0),yes)
 build: build-target-binutils build-generic-target-binutils build-host-libbfd \
 	build-target-gcc build-generic-target-gcc \
@@ -249,7 +241,6 @@ build: build-target-binutils build-generic-target-binutils build-host-libbfd \
 install: install-target-binutils install-generic-target-binutils \
 	install-host-libbfd install-bootstrap-gcc install-generic-target-gcc \
 	install-target-gdb
-endif
 endif
 else
 build: build-target-binutils build-host-libbfd build-bootstrap-gcc \
@@ -494,11 +485,6 @@ CFLAGS_FOR_TARGET += -DTARGET_POSIX_IO -fno-short-enums
 # LONG_BIT, which usually comes in through limits.h -- but gcc has its own
 # version of that which fails to include sys/limits.h
 CFLAGS_FOR_TARGET += -isystem $(abs_srcdir)/../android/bionic/libc/include -isystem $(abs_srcdir)/../android/bionic/libc/kernel/common -isystem $(abs_srcdir)/../android/bionic/libc/kernel/arch-$(target_cpu) -isystem $(abs_srcdir)/../android/bionic/libc/arch-$(target_cpu)/include -isystem $(abs_srcdir)/../android/bionic/libm/include -isystem $(abs_srcdir)/../android/bionic/libm/include/arm -isystem $(abs_srcdir)/../android/bionic/libm/arm -include $(abs_srcdir)/../android/bionic/libc/include/sys/limits.h
-ifeq ($(target_cpu),aarch64)
-# AArch64 doesn't have bionic/libc/arch-aarch64 directories yet, for now, let's use
-# traditional ARM and see what breaks
-CFLAGS_FOR_TARGET += -isystem $(abs_srcdir)/../android/bionic/libc/arch-arm/include -isystem $(abs_srcdir)/../android/bionic/libc/kernel/arch-arm
-endif
 # ARM specific options.
 ifeq ($(target_cpu),arm)
 GCC_CONFIG_ARGS += --with-float=soft --with-fpu=vfp --with-arch=armv5te \
@@ -526,12 +512,6 @@ stmp-build-target-bionic: install-target-binutils install-bootstrap-gcc
 			exit 1 ; \
 		fi ; \
 	fi
-ifeq ($(target_cpu),aarch64)
-	# Until we have aarch64 support in build/core, just remove aarch32 specific flags
-	sed -i -e 's,-msoft-float,,;s,-mfloat-abi=softfp,,;s,-mfpu=neon,,;s,-mthumb-interwork,,g;s,-mthumb,,g;s,-march=armv7-a,,g;s,-fstack-protector,,g;s|-Wl,--fix-cortex-a8||g;s|-Wl,--no-fix-cortex-a8||g' $(abs_srcdir)/../android/build/core/combo/TARGET_linux-arm.mk $(abs_srcdir)/../android/build/core/combo/arch/arm/*.mk $(abs_srcdir)/../android/build/core/raw_executable.mk
-	# No gold on aarch64 yet...
-	sed -i -e 's|-Wl,--icf=safe||g' $(abs_srcdir)/../android/build/core/combo/TARGET_linux-arm.mk $(abs_srcdir)/../android/build/core/combo/arch/arm/*.mk
-endif
 	# Building elfutils is necessary for ICS Bionic, but no longer for JellyBean
 	# Uncomment the line below if you're trying to build against a pre-JB Android tree.
 	#ONE_SHOT_MAKEFILE=external/elfutils/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=pandaboard
