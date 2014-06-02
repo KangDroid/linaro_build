@@ -53,9 +53,7 @@ INSTALL:=@INSTALL@
 INSTALL_DATA:=@INSTALL_DATA@
 TOPLEVEL_CONFIGURE_ARGUMENTS:=@TOPLEVEL_CONFIGURE_ARGUMENTS@
 baseargs = @baseargs@
-GCC_MIN_VERSION_4_3_0:=@GCC_MIN_VERSION_4_3_0@
-GCC_MIN_VERSION_4_5_0:=@GCC_MIN_VERSION_4_5_0@
-GCC_MIN_VERSION_4_6_0:=@GCC_MIN_VERSION_4_6_0@
+GCC_MIN_VERSION_4_8_0:=@GCC_MIN_VERSION_4_8_0@
 CLOOG_BACKEND:=@CLOOG_BACKEND@
 ENABLE_GRAPHITE:=@ENABLE_GRAPHITE@
 PACKAGE_TO_SRCDIR:=@package_to_srcdir@
@@ -224,7 +222,6 @@ ifeq ($(generic_target),aarch64-unknown-)
 generic_target := aarch64-none-elf
 endif
 
-ifeq ($(GCC_MIN_VERSION_4_5_0),yes)
 build: build-target-binutils build-generic-target-binutils build-host-libbfd \
 	build-target-gcc build-generic-target-gcc \
 	build-target-gdb remove-bionic
@@ -232,16 +229,6 @@ build: build-target-binutils build-generic-target-binutils build-host-libbfd \
 install: install-target-binutils install-generic-target-binutils \
 	install-host-libbfd install-target-gcc install-generic-target-gcc \
 	install-target-gdb
-else
-# gcc < 4.5 is too broken to build a proper target compiler
-# But it's sufficient to build the bootstrap target compiler...
-build: build-target-binutils build-generic-target-binutils build-host-libbfd \
-	build-bootstrap-gcc build-generic-target-gcc build-target-gdb
-
-install: install-target-binutils install-generic-target-binutils \
-	install-host-libbfd install-bootstrap-gcc install-generic-target-gcc \
-	install-target-gdb
-endif
 else
 build: build-target-binutils build-host-libbfd build-bootstrap-gcc \
 	build-target-gdb
@@ -447,16 +434,12 @@ GCC_CONFIG_ARGS=--prefix=$(prefix) \
 
 # For gcc versions 4.3.0 and later, gmp and mpfr are required.
 # Also build libgcc is a seperate sub-target in 4.3.0+.
-ifeq ($(GCC_MIN_VERSION_4_3_0),yes)
 stmp-config-bootstrap-gcc: stmp-install-host-gmp stmp-install-host-mpfr
 GCC_CONFIG_ARGS += --with-gmp=$(GMP_DIR) --with-mpfr=$(MPFR_DIR)
-endif
 
 # For gcc versions 4.5.0 and higher, mpc is required.
-ifeq ($(GCC_MIN_VERSION_4_5_0),yes)
 stmp-config-bootstrap-gcc: stmp-install-host-mpc
 GCC_CONFIG_ARGS += --with-mpc=$(MPC_DIR)
-endif
 
 # For gcc 4.5+ with graphite optimization, cloog and ppl required.
 ifeq ($(ENABLE_GRAPHITE),yes)
@@ -751,11 +734,7 @@ endif
 # minimal gcc only builds the C and C++ compilers and libgcc
 # We use the full gcc configure rules.
 .PHONY: build-target-minimal-gcc install-target-minimal-gcc
-ifeq ("$(GCC_MIN_VERSION_4_3_0)","yes")
 MINIMAL_GCC_BUILD_TARGETS:= gcc target-libgcc 
-else
-MINIMAL_GCC_BUILD_TARGETS:= gcc
-endif
 
 build-target-minimal-gcc: stmp-build-target-minimal-gcc
 stmp-build-target-minimal-gcc: stmp-config-target-gcc

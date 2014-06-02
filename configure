@@ -597,9 +597,7 @@ MPC_VERSION
 MPFR_VERSION
 GMP_VERSION
 NEWLIB_VERSION
-GCC_MIN_VERSION_4_6_0
-GCC_MIN_VERSION_4_5_0
-GCC_MIN_VERSION_4_3_0
+GCC_MIN_VERSION_4_8_0
 GCC_VERSION
 GOLD_VERSION
 BINUTILS_VERSION
@@ -2200,9 +2198,6 @@ fi
 if test x${enableval} != xno; then
   graphite=yes
 fi
-if test "$GCC_MIN_VERSION_4_5_0" == "no"; then
-  graphite=no
-fi
 ENABLE_GRAPHITE=$graphite
 
 
@@ -2402,43 +2397,24 @@ $as_echo "$GCC_MAJOR . $GCC_MINOR" >&6; }
   else
     # No version file, assume it is trunk
     GCC_MAJOR=4
-    GCC_MINOR=7
+    GCC_MINOR=10
     { $as_echo "$as_me:${as_lineno-$LINENO}: result: No version found, assuming trunk" >&5
 $as_echo "No version found, assuming trunk" >&6; }
   fi
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if gcc is at least 4.3.0" >&5
-$as_echo_n "checking if gcc is at least 4.3.0... " >&6; }
-if test "$GCC_MAJOR" -gt 4 -o \
-      \( "$GCC_MAJOR" -eq 4 -a "$GCC_MINOR" -ge 3 \) ; then
-  GCC_MIN_VERSION_4_3_0="yes"
-else
-  GCC_MIN_VERSION_4_3_0="no"
+if test "$GCC_MAJOR" -lt 4 -o \( "$GCC_MAJOR" -eq 4 -a "$GCC_MINOR" -lt 7 \) ; then
+  as_fn_error $? "The version of gcc you are trying to build is too old. Use at least gcc 4.7." "$LINENO" 5
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $GCC_MIN_VERSION_4_3_0" >&5
-$as_echo "$GCC_MIN_VERSION_4_3_0" >&6; }
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if gcc $GCC_MAJOR . $GCC_MINOR is at least 4.5.0" >&5
-$as_echo_n "checking if gcc $GCC_MAJOR . $GCC_MINOR is at least 4.5.0... " >&6; }
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if gcc $GCC_MAJOR . $GCC_MINOR is at least 4.8.0" >&5
+$as_echo_n "checking if gcc $GCC_MAJOR . $GCC_MINOR is at least 4.8.0... " >&6; }
 if test "$GCC_MAJOR" -gt 4 -o \
-            \( "$GCC_MAJOR" -eq 4 -a "$GCC_MINOR" -ge 5 \) ; then
-  GCC_MIN_VERSION_4_5_0="yes"
+          \( "$GCC_MAJOR" -eq 4 -a "$GCC_MINOR" -ge 8 \) ; then
+  GCC_MIN_VERSION_4_8_0="yes"
 else
-  GCC_MIN_VERSION_4_5_0="no"
+  GCC_MIN_VERSION_4_8_0="no"
 fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $GCC_MIN_VERSION_4_5_0" >&5
-$as_echo "$GCC_MIN_VERSION_4_5_0" >&6; }
-{ $as_echo "$as_me:${as_lineno-$LINENO}: checking if gcc $GCC_MAJOR . $GCC_MINOR is at least 4.6.0" >&5
-$as_echo_n "checking if gcc $GCC_MAJOR . $GCC_MINOR is at least 4.6.0... " >&6; }
-if test "$GCC_MAJOR" -gt 4 -o \
-          \( "$GCC_MAJOR" -eq 4 -a "$GCC_MINOR" -ge 6 \) ; then
-  GCC_MIN_VERSION_4_6_0="yes"
-else
-  GCC_MIN_VERSION_4_6_0="no"
-fi
-{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $GCC_MIN_VERSION_4_6_0" >&5
-$as_echo "$GCC_MIN_VERSION_4_6_0" >&6; }
-
-
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $GCC_MIN_VERSION_4_8_0" >&5
+$as_echo "$GCC_MIN_VERSION_4_8_0" >&6; }
 
 
 # newlib version (default is 1.16.0)
@@ -2491,7 +2467,6 @@ if test \( ! -d $srcdir/../$tool/newlib-${NEWLIB_VERSION} \) -a \( x"$version" !
 fi
 fi
 
-if test "$GCC_MIN_VERSION_4_3_0" == "yes"; then
 # gmp version (default is 4.2.2)
 # gmp is only used for gcc version higher than 4.3.0
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking gmp version" >&5
@@ -2586,11 +2561,9 @@ if test \( ! -d $srcdir/../$tool/mpfr-${MPFR_VERSION} \) -a \( x"$version" != x"
   fi
 fi
 
-fi
 
 
 
-if test "$GCC_MIN_VERSION_4_5_0" == "yes"; then
 # mpc version (default is 0.8.1)
 # mpc is only used for gcc version higher than 4.5.0
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking mpc version" >&5
@@ -2636,7 +2609,6 @@ if test \( ! -d $srcdir/../$tool/mpc-${MPC_VERSION} \) -a \( x"$version" != x"no
   else
     as_fn_error $? "'package mpc-${MPC_VERSION} does not exist.'" "$LINENO" 5
   fi
-fi
 fi
 
 

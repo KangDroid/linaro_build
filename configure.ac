@@ -210,9 +210,6 @@ AC_ARG_ENABLE([graphite],
 if test x${enableval} != xno; then
   graphite=yes
 fi
-if test "$GCC_MIN_VERSION_4_5_0" == "no"; then
-  graphite=no
-fi
 ENABLE_GRAPHITE=$graphite
 AC_SUBST(ENABLE_GRAPHITE)
 
@@ -336,37 +333,22 @@ else
   else
     # No version file, assume it is trunk
     GCC_MAJOR=4
-    GCC_MINOR=7
+    GCC_MINOR=10
     AC_MSG_RESULT([No version found, assuming trunk])
   fi
 fi
-AC_MSG_CHECKING([if gcc is at least 4.3.0])
-if test "$GCC_MAJOR" -gt 4 -o \
-      \( "$GCC_MAJOR" -eq 4 -a "$GCC_MINOR" -ge 3 \) ; then
-  GCC_MIN_VERSION_4_3_0="yes"
-else
-  GCC_MIN_VERSION_4_3_0="no"
+if test "$GCC_MAJOR" -lt 4 -o \( "$GCC_MAJOR" -eq 4 -a "$GCC_MINOR" -lt 7 \) ; then
+  AC_MSG_ERROR([The version of gcc you are trying to build is too old. Use at least gcc 4.7.])
 fi
-AC_MSG_RESULT([$GCC_MIN_VERSION_4_3_0])
-AC_MSG_CHECKING([if gcc $GCC_MAJOR . $GCC_MINOR is at least 4.5.0])
+AC_MSG_CHECKING([if gcc $GCC_MAJOR . $GCC_MINOR is at least 4.8.0])
 if test "$GCC_MAJOR" -gt 4 -o \
-            \( "$GCC_MAJOR" -eq 4 -a "$GCC_MINOR" -ge 5 \) ; then
-  GCC_MIN_VERSION_4_5_0="yes"
+          \( "$GCC_MAJOR" -eq 4 -a "$GCC_MINOR" -ge 8 \) ; then
+  GCC_MIN_VERSION_4_8_0="yes"
 else
-  GCC_MIN_VERSION_4_5_0="no"
+  GCC_MIN_VERSION_4_8_0="no"
 fi
-AC_MSG_RESULT([$GCC_MIN_VERSION_4_5_0])
-AC_MSG_CHECKING([if gcc $GCC_MAJOR . $GCC_MINOR is at least 4.6.0])
-if test "$GCC_MAJOR" -gt 4 -o \
-          \( "$GCC_MAJOR" -eq 4 -a "$GCC_MINOR" -ge 6 \) ; then
-  GCC_MIN_VERSION_4_6_0="yes"
-else
-  GCC_MIN_VERSION_4_6_0="no"
-fi
-AC_MSG_RESULT([$GCC_MIN_VERSION_4_6_0])
-AC_SUBST(GCC_MIN_VERSION_4_3_0)
-AC_SUBST(GCC_MIN_VERSION_4_5_0)
-AC_SUBST(GCC_MIN_VERSION_4_6_0)
+AC_MSG_RESULT([$GCC_MIN_VERSION_4_8_0])
+AC_SUBST(GCC_MIN_VERSION_4_8_0)
 
 # newlib version (default is 1.16.0)
 # newlib is only used for arm-newlib-eabi for testing
@@ -384,7 +366,6 @@ AC_SUBST(NEWLIB_VERSION)
 ANDROID_CHECK_PACKAGE(newlib-${NEWLIB_VERSION})
 fi
 
-if test "$GCC_MIN_VERSION_4_3_0" == "yes"; then
 # gmp version (default is 4.2.2)
 # gmp is only used for gcc version higher than 4.3.0
 AC_MSG_CHECKING([gmp version])
@@ -411,11 +392,9 @@ AC_ARG_WITH([mpfr-version],
 AC_MSG_RESULT($MPFR_VERSION)
 ANDROID_CHECK_PACKAGE(mpfr-${MPFR_VERSION})
 
-fi
 AC_SUBST(GMP_VERSION)
 AC_SUBST(MPFR_VERSION)
 
-if test "$GCC_MIN_VERSION_4_5_0" == "yes"; then
 # mpc version (default is 0.8.1)
 # mpc is only used for gcc version higher than 4.5.0
 AC_MSG_CHECKING([mpc version])
@@ -428,7 +407,6 @@ AC_ARG_WITH([mpc-version],
 [MPC_VERSION="0.8.1"])
 AC_MSG_RESULT($MPC_VERSION)
 ANDROID_CHECK_PACKAGE(mpc-${MPC_VERSION})
-fi
 AC_SUBST(MPC_VERSION)
 
 if test "$ENABLE_GRAPHITE" == "yes"; then
