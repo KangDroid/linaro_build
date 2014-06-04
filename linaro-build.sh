@@ -160,8 +160,8 @@ getPackage() {
 	package=$(echo $package |cut -d# -f1)
       else
         # Let's take a good guess: This is gcc master branch, so it
-	# should be 4.9 for now...
-	version=4.9
+	# should be 4.10 for now...
+	version=4.10
       fi
       package=${package/.git/}
       ;;
@@ -233,6 +233,9 @@ while [ $# -gt 0 ]; do
       ;;
     --apply-gcc-patch=yes | --apply-gcc-patch=no)
       ARG_APPLY_PATCH="${ARG#*=}"
+      ;;
+    --disable-graphite|--enable-graphite)
+      LINARO_BUILD_EXTRA_CONFIGURE_FLAGS="${LINARO_BUILD_EXTRA_CONFIGURE_FLAGS} ${ARG}"
       ;;
     --help)
       usage && abort
