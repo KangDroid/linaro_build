@@ -487,12 +487,6 @@ endif
 # We add the baseargs and the end so that they override any default args
 GCC_CONFIG_ARGS += $(baseargs)
 
-ifeq ($(TARGET_PLATFORM),arm64)
-NO_MULTIARCH := LOCAL_MULTILIB=first
-else
-NO_MULTIARCH :=
-endif
-
 ifeq ($(BUILD_ANDROID_GCC),yes)
 stmp-build-target-bionic: install-target-binutils install-bootstrap-gcc
 	# Workaround for seemingly broken version of make on android-build
@@ -509,9 +503,9 @@ stmp-build-target-bionic: install-target-binutils install-bootstrap-gcc
 	# Building elfutils is necessary for ICS Bionic, but no longer for JellyBean
 	# Uncomment the line below if you're trying to build against a pre-JB Android tree.
 	#ONE_SHOT_MAKEFILE=external/elfutils/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM)
-	ONE_SHOT_MAKEFILE=build/libs/host/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 PRIVATE_TARGET_LIBATOMIC="" $(NO_MULTIARCH)
-	ONE_SHOT_MAKEFILE=build/tools/acp/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 PRIVATE_TARGET_LIBATOMIC="" $(NO_MULTIARCH)
-	ONE_SHOT_MAKEFILE=bionic/Android.mk make -C $(abs_srcdir)/../android all_modules out/target/product/generic_$(TARGET_PLATFORM)/obj/lib/crtbegin_dynamic.o TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 BUILD_TINY_ANDROID=true PRIVATE_TARGET_LIBATOMIC="" $(NO_MULTIARCH) || :
+	ONE_SHOT_MAKEFILE=build/libs/host/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 PRIVATE_TARGET_LIBATOMIC="" TARGET_2ND_ARCH=""
+	ONE_SHOT_MAKEFILE=build/tools/acp/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 PRIVATE_TARGET_LIBATOMIC="" TARGET_2ND_ARCH=""
+	ONE_SHOT_MAKEFILE=bionic/Android.mk make -C $(abs_srcdir)/../android all_modules out/target/product/generic_$(TARGET_PLATFORM)/obj/lib/crtbegin_dynamic.o TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 BUILD_TINY_ANDROID=true PRIVATE_TARGET_LIBATOMIC="" TARGET_2ND_ARCH=""
 	cp $(abs_srcdir)/../android/out/target/product/generic_$(TARGET_PLATFORM)/obj/lib/* $(prefix)/$(target_no_unknown)/lib/
 	touch dummy.c
 	$(prefix)/bin/${cur_target}-gcc -o dummy.o -c dummy.c
