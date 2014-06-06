@@ -465,8 +465,10 @@ GCC_CONFIG_ARGS += $(GCC_CONFIG_LIBSTDCXX_V3) --disable-libssp \
 CFLAGS_FOR_TARGET += -DTARGET_POSIX_IO -fno-short-enums
 ifeq ($(target_cpu),aarch64)
 TARGET_PLATFORM := arm64
+ANDROID_OUTDIR := generic_$(TARGET_PLATFORM)
 else
 TARGET_PLATFORM := $(target_cpu)
+ANDROID_OUTDIR := generic
 endif
 # We need to find pthread.h to build libgcc with threading support.
 # -include .../sys/limits.h is a workaround for Bionic's ptherad.h requiring
@@ -505,8 +507,8 @@ stmp-build-target-bionic: install-target-binutils install-bootstrap-gcc
 	#ONE_SHOT_MAKEFILE=external/elfutils/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM)
 	ONE_SHOT_MAKEFILE=build/libs/host/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 PRIVATE_TARGET_LIBATOMIC="" TARGET_2ND_ARCH=""
 	ONE_SHOT_MAKEFILE=build/tools/acp/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 PRIVATE_TARGET_LIBATOMIC="" TARGET_2ND_ARCH=""
-	ONE_SHOT_MAKEFILE=bionic/Android.mk make -C $(abs_srcdir)/../android all_modules out/target/product/generic_$(TARGET_PLATFORM)/obj/lib/crtbegin_dynamic.o TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 BUILD_TINY_ANDROID=true PRIVATE_TARGET_LIBATOMIC="" TARGET_2ND_ARCH=""
-	cp $(abs_srcdir)/../android/out/target/product/generic_$(TARGET_PLATFORM)/obj/lib/* $(prefix)/$(target_no_unknown)/lib/
+	ONE_SHOT_MAKEFILE=bionic/Android.mk make -C $(abs_srcdir)/../android all_modules out/target/product/$(ANDROID_OUTDIR)/obj/lib/crtbegin_dynamic.o TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 BUILD_TINY_ANDROID=true PRIVATE_TARGET_LIBATOMIC="" TARGET_2ND_ARCH=""
+	cp $(abs_srcdir)/../android/out/target/product/$(ANDROID_OUTDIR)/obj/lib/* $(prefix)/$(target_no_unknown)/lib/
 	touch dummy.c
 	$(prefix)/bin/${cur_target}-gcc -o dummy.o -c dummy.c
 	$(prefix)/bin/${cur_target}-ar cru $(prefix)/$(target_no_unknown)/lib/libpthread.a dummy.o
@@ -517,7 +519,7 @@ stmp-build-target-bionic: install-target-binutils install-bootstrap-gcc
 # to build bionic in the Android build rather than the toolchain build so it
 # is compiled with the optimal settings for the target board.
 remove-bionic:
-	rm -f $(prefix)/$(target_no_unknown)/lib/libc* $(prefix)/$(target_no_unknown)/lib/libm.so $(prefix)/$(target_no_unknown)/lib/libdl.so $(prefix)/$(target_no_unknown)/lib/crt*.o
+	rm -f $(prefix)/$(target_no_unknown)/lib/libc* $(prefix)/$(target_no_unknown)/lib/libm.so $(prefix)/$(target_no_unknown)/lib/libdl.so $(prefix)/$(target_no_unknown)/lib/crt*.o $(prefix)/$(target_no_unknown)/lib64/libc* $(prefix)/$(target_no_unknown)/lib64/libm.so $(prefix)/$(target_no_unknown)/lib64/libdl.so $(prefix)/$(target_no_unknown)/lib64/crt*.o
 	rm -f stmp-build-target-bionic
 else
 stmp-build-target-bionic:
