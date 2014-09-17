@@ -222,6 +222,9 @@ while [ $# -gt 0 ]; do
     --toolchain-src=*)
       ARG_TOOLCHAIN_SRC_DIR="${ARG#*=}"
       ;;
+    --with-binutils=*)
+      ARG_WITH_BINUTILS="${ARG#*=}"
+      ;;
     --with-gcc=*)
       ARG_WITH_GCC="${ARG#*=}"
       ;;
@@ -258,6 +261,24 @@ fi
 
 if [ x"${ARG_WITH_GCC}" = x"" ]; then
   error "Must specify --with-gcc to build toolchain"
+fi
+
+if [ x"${ARG_WITH_BINUTILS}" = x"" ]; then
+  BINUTILS_VERSION="${ARG_WITH_BINUTILS}"
+else
+  BINUTILS_VERSION="linaro-2.24.0-`date +%Y.%m`"
+fi
+
+if ! [ -d ../binutils/binutils-${BINUTILS_VERSION} ]; then
+  cd ../binutils
+  AGE=0
+  while ! [ -e binutils-${BINUTILS_VERSION}.tar.xz ]; do
+    wget http://cbuild.validation.linaro.org/snapshots/binutils-${BINUTILS_VERSION}.tar.xz || BINUTILS_VERSION="linaro-2.24.0-`date --date=\"$AGE months ago\" +%Y.%m`"
+    AGE=$((AGE+1))
+  done
+  tar xf binutils-${BINUTILS_VERSION}.tar.xz
+  rm binutils-${BINUTILS_VERSION}.tar.xz
+  cd -
 fi
 
 if [ ! -z "${ARG_WITH_SYSROOT}" ]; then
