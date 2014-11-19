@@ -273,7 +273,7 @@ if ! [ -d ../binutils/binutils-${BINUTILS_VERSION} ]; then
   cd ../binutils
   AGE=0
   while ! [ -e binutils-${BINUTILS_VERSION}.tar.xz ]; do
-    wget http://cbuild.validation.linaro.org/snapshots/binutils-${BINUTILS_VERSION}.tar.xz || BINUTILS_VERSION="linaro-2.24.0-`date --date=\"$AGE months ago\" +%Y.%m`"
+    wget http://cbuild.validation.linaro.org/snapshots/binutils-${BINUTILS_VERSION}.tar.xz || wget http://people.linaro.org/~bernhard.rosenkranzer/binutils-${BINUTILS_VERSION}.tar.xz || BINUTILS_VERSION="linaro-2.24.0-`date --date=\"$AGE months ago\" +%Y.%m`"
     AGE=$((AGE+1))
   done
   tar xf binutils-${BINUTILS_VERSION}.tar.xz
