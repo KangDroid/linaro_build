@@ -266,7 +266,8 @@ fi
 if [ x"${ARG_WITH_BINUTILS}" = x"" ]; then
   BINUTILS_VERSION="${ARG_WITH_BINUTILS}"
 else
-  BINUTILS_VERSION="linaro-2.24.0-`date +%Y.%m`"
+  # FIXME remove -2 after 2014.11 release
+  BINUTILS_VERSION="linaro-2.24.0-`date +%Y.%m`-2"
 fi
 
 if ! [ -d ../binutils/binutils-${BINUTILS_VERSION} ]; then
