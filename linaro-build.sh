@@ -263,7 +263,7 @@ if [ x"${ARG_WITH_GCC}" = x"" ]; then
   error "Must specify --with-gcc to build toolchain"
 fi
 
-if [ x"${ARG_WITH_BINUTILS}" = x"" ]; then
+if [ x"${ARG_WITH_BINUTILS}" != x"" ]; then
   BINUTILS_VERSION="${ARG_WITH_BINUTILS}"
 else
   # FIXME remove -2 after 2014.11 release
