@@ -160,8 +160,8 @@ getPackage() {
 	package=$(echo $package |cut -d# -f1)
       else
         # Let's take a good guess: This is gcc master branch, so it
-	# should be 4.10 for now...
-	version=4.10
+	# should be 5.0 for now...
+	version=5.0
       fi
       package=${package/.git/}
       ;;
