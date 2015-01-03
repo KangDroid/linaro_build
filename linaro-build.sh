@@ -351,6 +351,7 @@ ${ARG_TOOLCHAIN_SRC_DIR}/build/configure \
   --with-mpc-version=${MPC_VERSION-current} \
   --with-gdb-version=${GDB_VERSION-current} \
   --with-ppl-version=${PPL_VERSION-1.1} \
+  --with-isl-version=${ISL_VERSION-0.14} \
   \
   ${LINARO_BUILD_EXTRA_CONFIGURE_FLAGS}
 
