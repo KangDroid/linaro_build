@@ -240,6 +240,11 @@ while [ $# -gt 0 ]; do
     --disable-graphite|--enable-graphite)
       LINARO_BUILD_EXTRA_CONFIGURE_FLAGS="${LINARO_BUILD_EXTRA_CONFIGURE_FLAGS} ${ARG}"
       ;;
+    --with-*-version=*)
+      component="`echo ${ARG} |cut -d- -f4 |tr [:lower:] [:upper:]`"
+      version="${ARG#*=}"
+      eval "${component}_VERSION=$version"
+      ;;
     --help)
       usage && abort
       ;;
@@ -344,6 +349,8 @@ ${ARG_TOOLCHAIN_SRC_DIR}/build/configure \
   --with-gmp-version=${GMP_VERSION-current} \
   --with-mpfr-version=${MPFR_VERSION-current} \
   --with-mpc-version=${MPC_VERSION-current} \
+  --with-gdb-version=${GDB_VERSION-current} \
+  --with-ppl-version=${PPL_VERSION-1.1} \
   \
   ${LINARO_BUILD_EXTRA_CONFIGURE_FLAGS}
 
