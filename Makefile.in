@@ -891,8 +891,8 @@ stmp-config-host-ppl: config.status stmp-install-host-gmp
 	 mkdir ${PPL_VERSION}) && \
 	($(canadian_env) \
 	 cd ${PPL_VERSION} ; \
-         export CFLAGS="${CFLAGS} -I$(GMP_DIR)/include" ; \
-         export CXXFLAGS="${CFLAGS} -I$(GMP_DIR)/include" ; \
+         export CFLAGS="${CFLAGS} -I$(GMP_DIR)/include -L$(GMP_DIR)/lib" ; \
+         export CXXFLAGS="${CFLAGS} -I$(GMP_DIR)/include -L$(GMP_DIR)/lib" ; \
 	$(call find-package-srcdir, ${PPL_VERSION})/configure \
 	 $(PPL_CONFIG_ARGS)) && \
 	$(STAMP) $@
