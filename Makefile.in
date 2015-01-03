@@ -74,12 +74,14 @@ MPFR_VERSION=mpfr-@MPFR_VERSION@
 MPC_VERSION=mpc-@MPC_VERSION@
 PPL_VERSION=ppl-@PPL_VERSION@
 CLOOG_VERSION=cloog-@CLOOG_VERSION@
+ISL_VERSION=isl-@ISL_VERSION@
 GDB_VERSION=gdb-@GDB_VERSION@
 HAVE_MPC=@have_mpc@
 HAVE_MPFR=@have_mpfr@
 HAVE_GMP=@have_gmp@
 HAVE_PPL=@have_ppl@
 HAVE_CLOOG=@have_cloog@
+HAVE_ISL=@have_isl@
 STAMP=touch
 
 TARGET_BINUTILS_BUILDDIR=$(abs_builddir)/$(BINUTILS_VERSION)
@@ -102,8 +104,12 @@ ifeq ($(HAVE_PPL),no)
   PPL_DIR=$(TEMP_INSTALLDIR)
 endif
 
-ifeq ($(HAVE_CLOOG), no)
+ifeq ($(HAVE_CLOOG),no)
   CLOOG_DIR=$(TEMP_INSTALLDIR)
+endif
+
+ifeq ($(HAVE_ISL),no)
+  ISL_DIR=$(TEMP_INSTALLDIR)
 endif
 
 ifeq ($(BINUTILS_VERSION),binutils-2.20.1)
@@ -314,7 +320,7 @@ endif
 endif
 endif
 ifeq ($(ENABLE_GRAPHITE),yes)
-BINUTILS_CONFIG_ARGS+= --with-cloog=${CLOOG_DIR} --with-gmp=${GMP_DIR} \
+BINUTILS_CONFIG_ARGS+= --with-cloog=${CLOOG_DIR} --with-isl=${ISL_DIR} --with-gmp=${GMP_DIR} \
 	--disable-cloog-version-check $(CLOOG_BACKEND) \
 	--enable-plugins --enable-threads
 # link to the static C++ runtime to avoid depending on the host version
@@ -322,7 +328,7 @@ BINUTILS_CONFIG_ARGS+= \
 	'--with-host-libstdcxx=-static-libgcc \
 	 -Wl,-Bstatic,-lstdc++,-Bdynamic -lm'
 endif
-stmp-config-target-binutils: config.status $(canadian_stmp)
+stmp-config-target-binutils: config.status stmp-install-host-ppl stmp-install-host-isl $(canadian_stmp)
 	([ -d ${BINUTILS_VERSION} ] || \
 	  mkdir ${BINUTILS_VERSION}) && \
 	($(canadian_env) \
@@ -443,7 +449,7 @@ GCC_CONFIG_ARGS += --with-mpc=$(MPC_DIR)
 
 # For gcc 4.5+ with graphite optimization, cloog and ppl required.
 ifeq ($(ENABLE_GRAPHITE),yes)
-GCC_CONFIG_ARGS += --with-cloog=${CLOOG_DIR} --with-ppl=${PPL_DIR} \
+GCC_CONFIG_ARGS += --with-cloog=${CLOOG_DIR} --with-isl=${ISL_DIR} --with-ppl=${PPL_DIR} \
 	--disable-ppl-version-check --disable-cloog-version-check --disable-isl-version-check $(CLOOG_BACKEND)
 # link to the static C++ runtime to avoid depending on the host version
 GCC_CONFIG_ARGS += \
@@ -897,6 +903,38 @@ stmp-install-host-ppl: stmp-build-host-ppl
 	$(MAKE) -C ${PPL_VERSION} install && \
 	$(STAMP) $@
 install-host-ppl: stmp-install-host-ppl
+
+# host isl rules
+.PHONY: config-host-isl build-host-isl install-host-isl
+config-host-isl: stmp-config-host-isl
+ISL_CONFIG_ARGS=$(host_baseargs) --prefix=$(TEMP_INSTALLDIR) --disable-shared \
+	  --target=${target_alias} \
+	  --host=${host} --build=${build} \
+	  --disable-nls
+stmp-config-host-isl: config.status stmp-install-host-gmp
+	([ -d ${ISL_VERSION} ] || \
+	 mkdir ${ISL_VERSION}) && \
+	($(canadian_env) \
+	 cd ${ISL_VERSION} ; \
+         export CFLAGS="${CFLAGS} -I$(GMP_DIR)/include" ; \
+         export CXXFLAGS="${CFLAGS} -I$(GMP_DIR)/include" ; \
+         export LDFLAGS="${LDFLAGS} -L$(GMP_DIR)/lib" ; \
+	$(call find-package-srcdir, ${ISL_VERSION})/configure \
+	 $(ISL_CONFIG_ARGS)) && \
+	$(STAMP) $@
+stmp-build-host-isl: stmp-config-host-isl
+	$(MAKE) -C ${ISL_VERSION} && $(STAMP) $@
+build-host-isl: stmp-build-host-isl
+
+ifeq ($(ENABLE_GRAPHITE)$(GCC_MIN_VERSION_4_8_0),yesyes)
+stmp-install-host-isl: stmp-build-host-isl
+	$(MAKE) -C ${ISL_VERSION} install && \
+	$(STAMP) $@
+else
+stmp-install-host-isl:
+	$(STAMP) $@
+endif
+install-host-isl: stmp-install-host-isl
 
 # host cloog rules
 .PHONY: config-host-cloog build-host-cloog install-host-cloog

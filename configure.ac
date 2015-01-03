@@ -440,6 +440,22 @@ fi
 AC_SUBST(PPL_VERSION)
 AC_SUBST(CLOOG_VERSION)
 
+if test "$ENABLE_GRAPHITE" == "yes"; then
+# isl version (default is 0.11.1)
+# isl is only used for gcc 4.8+ with graphite optimization.
+AC_MSG_CHECKING([isl version])
+AC_ARG_WITH([isl-version],
+  [  --with-isl-version=VERSION
+                         use isl-VERSION (default is 0.11.1)],
+  [if test x"$withval" != x ; then
+     ISL_VERSION="$withval"
+   fi],
+[ISL_VERSION="0.11.1"])
+AC_MSG_RESULT($ISL_VERSION)
+ANDROID_CHECK_PACKAGE(isl-${ISL_VERSION})
+fi
+AC_SUBST(ISL_VERSION)
+
 # gdb version (default is the current linaro release)
 AC_MSG_CHECKING([target gdb version to build])
 AC_ARG_WITH([gdb-version],
@@ -542,5 +558,18 @@ AC_ARG_WITH(cloog, [  --with-cloog=PATH
    fi],
   [have_cloog=no])
 AC_SUBST(have_cloog)
+
+# Specify a location for isl
+AC_ARG_WITH(isl, [  --with-isl=PATH
+                          specify prefix directory for the installed ISL package.],
+  [if test -d "$withval" ; then
+     have_isl="$withval"
+   elif test x"$withval" != x"no"; then
+     AC_MSG_ERROR(invalid value for --with-isl)
+   else
+     have_isl=no
+   fi],
+  [have_isl=no])
+AC_SUBST(have_isl)
 
 AC_OUTPUT

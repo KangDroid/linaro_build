@@ -591,8 +591,9 @@ have_mpc
 sysroot
 GDB_VERSION
 CLOOG_VERSION
-PPL_VERSION
 CLOOG_BACKEND
+ISL_VERSION
+PPL_VERSION
 MPC_VERSION
 MPFR_VERSION
 GMP_VERSION
@@ -1341,6 +1342,8 @@ Optional Packages:
                           specify prefix directory for the installed PPL package.
   --with-cloog=PATH
                           specify prefix directory for the installed CLooG package.
+  --with-isl=PATH
+                          specify prefix directory for the installed ISL package.
 
 Report bugs to the package provider.
 _ACEOF
@@ -2709,7 +2712,47 @@ if test \( ! -d $srcdir/../$tool/cloog-${CLOOG_VERSION} \) -a \( x"$version" != 
 fi
 fi
 
+if test "$ENABLE_GRAPHITE" == "yes"; then
+# isl version (default is 0.11.1)
+# isl is only used for gcc 4.8+ with graphite optimization.
+{ $as_echo "$as_me:${as_lineno-$LINENO}: checking isl version" >&5
+$as_echo_n "checking isl version... " >&6; }
 
+# Check whether --with-isl-version was given.
+if test "${with_isl_version+set}" = set; then :
+  withval=$with_isl_version; if test x"$withval" != x ; then
+     ISL_VERSION="$withval"
+   fi
+else
+  ISL_VERSION="0.11.1"
+fi
+
+{ $as_echo "$as_me:${as_lineno-$LINENO}: result: $ISL_VERSION" >&5
+$as_echo "$ISL_VERSION" >&6; }
+x=isl-${ISL_VERSION}; tool=$(echo "$x" | sed -e 's/-.*//'); version=$(echo "$x" | sed -e 's/[^-]*-//'); \
+if test \( ! -d $srcdir/../$tool/isl-${ISL_VERSION} \) -a \( x"$version" != x"none"  \) ; then
+  if test -f $srcdir/../$tool/isl-${ISL_VERSION}.tar ; then
+    mkdir -p temp-src && tar -C temp-src -xf $srcdir/../$tool/isl-${ISL_VERSION}.tar
+  elif test -f $srcdir/../$tool/isl-${ISL_VERSION}.tar.gz ; then
+    mkdir -p temp-src && tar -C temp-src -xzf $srcdir/../$tool/isl-${ISL_VERSION}.tar.gz
+  elif test -f $srcdir/../$tool/isl-${ISL_VERSION}.tgz ; then
+    mkdir -p temp-src && tar -C temp-src -xzf $srcdir/../$tool/isl-${ISL_VERSION}.tgz
+  elif test -f $srcdir/../$tool/isl-${ISL_VERSION}.tar.bz2 ; then
+    mkdir -p temp-src && tar -C temp-src -xjf $srcdir/../$tool/isl-${ISL_VERSION}.tar.bz2
+  elif test -f $srcdir/../tarballs/isl-${ISL_VERSION}.tar ; then
+    mkdir -p temp-src && tar -C temp-src -xf $srcdir/../tarballs/isl-${ISL_VERSION}.tar
+  elif test -f $srcdir/../tarballs/isl-${ISL_VERSION}.tar.gz ; then
+    mkdir -p temp-src && tar -C temp-src -xzf $srcdir/../tarballs/isl-${ISL_VERSION}.tar.gz
+  elif test -f $srcdir/../tarballs/isl-${ISL_VERSION}.tgz ; then
+    mkdir -p temp-src && tar -C temp-src -xzf $srcdir/../tarballs/isl-${ISL_VERSION}.tgz
+  elif test -f $srcdir/../tarballs/isl-${ISL_VERSION}.tar.bz2 ; then
+    mkdir -p temp-src && tar -C temp-src -xjf $srcdir/../tarballs/isl-${ISL_VERSION}.tar.bz2
+  else
+    as_fn_error "'package isl-${ISL_VERSION} does not exist.'" "$LINENO" 5
+    as_fn_error $? "'package cloog-${CLOOG_VERSION} does not exist.'" "$LINENO" 5
+  fi
+fi
+fi
 
 # gdb version (default is the current linaro release)
 { $as_echo "$as_me:${as_lineno-$LINENO}: checking target gdb version to build" >&5
@@ -2869,7 +2912,20 @@ else
   have_cloog=no
 fi
 
+# Specify a location for isl
 
+# Check whether --with-isl was given.
+if test "${with_isl+set}" = set; then :
+  withval=$with_isl; if test -d "$withval" ; then
+     have_isl="$withval"
+   elif test x"$withval" != x"no"; then
+     as_fn_error "invalid value for --with-isl" "$LINENO" 5
+   else
+     have_isl=no
+   fi
+else
+  have_isl=no
+fi
 
 cat >confcache <<\_ACEOF
 # This file is a shell script that caches the results of configure
