@@ -989,6 +989,18 @@ build-host-cloog:
 stmp-install-host-cloog:
 
 install-host-cloog:
+	
+stmp-config-host-isl:
+
+stmp-build-host-isl:
+
+stmp-install-host-isl:
+
+config-host-isl:
+
+build-host-isl:
+
+install-host-isl:
 endif
 
 # target gdb rules
