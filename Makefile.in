@@ -963,6 +963,7 @@ stmp-install-host-cloog: stmp-build-host-cloog
 		install-pkgincludeHEADERS
 	$(MAKE) -C ${CLOOG_VERSION}/isl install-libLTLIBRARIES \
 		install-pkgincludeHEADERS
+	cp -a $(call find-package-srcdir, ${CLOOG_VERSION})/include/cloog/isl $(TEMP_INSTALLDIR)/include/cloog/
 	$(STAMP) $@
 install-host-cloog: stmp-install-host-cloog
 else
