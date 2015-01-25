@@ -584,6 +584,7 @@ PACKAGE_URL=''
 ac_subst_vars='LTLIBOBJS
 LIBOBJS
 have_cloog
+have_isl
 have_ppl
 have_gmp
 have_mpfr
