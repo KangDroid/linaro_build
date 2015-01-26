@@ -320,7 +320,11 @@ endif
 endif
 endif
 ifeq ($(ENABLE_GRAPHITE),yes)
-BINUTILS_CONFIG_ARGS+= --with-cloog=${CLOOG_DIR} --with-isl=${ISL_DIR} --with-gmp=${GMP_DIR} \
+# binutils doesn't use isl, but its configure script fails if it sees
+# a newer version than 0.12 in a directory specified by --with-isl.
+# We're fine if binutils gets built --without-isl as long as gcc's
+# configure script knows better.
+BINUTILS_CONFIG_ARGS+= --with-cloog=${CLOOG_DIR} --without-isl --with-gmp=${GMP_DIR} \
 	--disable-cloog-version-check $(CLOOG_BACKEND) \
 	--enable-plugins --enable-threads
 # link to the static C++ runtime to avoid depending on the host version
@@ -441,7 +445,7 @@ GCC_CONFIG_ARGS=--prefix=$(prefix) \
 # For gcc versions 4.3.0 and later, gmp and mpfr are required.
 # Also build libgcc is a seperate sub-target in 4.3.0+.
 stmp-config-bootstrap-gcc: stmp-install-host-gmp stmp-install-host-mpfr
-GCC_CONFIG_ARGS += --with-gmp=$(GMP_DIR) --with-mpfr=$(MPFR_DIR)
+GCC_CONFIG_ARGS += --with-gmp=$(GMP_DIR) --with-mpfr=$(MPFR_DIR) --with-isl=${ISL_DIR}
 
 # For gcc versions 4.5.0 and higher, mpc is required.
 stmp-config-bootstrap-gcc: stmp-install-host-mpc
