@@ -515,6 +515,8 @@ stmp-build-target-bionic: install-target-binutils install-bootstrap-gcc
 	# Building elfutils is necessary for ICS Bionic, but no longer for JellyBean
 	# Uncomment the line below if you're trying to build against a pre-JB Android tree.
 	#ONE_SHOT_MAKEFILE=external/elfutils/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM)
+	mkdir -p $(abs_srcdir)/../android/out/host/linux-x86/obj/SHARED_LIBRARIES/libc++_intermediates
+	touch $(abs_srcdir)/../android/out/host/linux-x86/obj/SHARED_LIBRARIES/libc++_intermediates/export_includes
 	ONE_SHOT_MAKEFILE=build/libs/host/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 PRIVATE_TARGET_LIBATOMIC="" TARGET_2ND_ARCH="" BUILD_HOST_64bit=true LOCAL_CC=$(abs_srcdir)/../android/prebuilts/clang/linux-x86/host/3.5/bin/clang
 	ONE_SHOT_MAKEFILE=build/tools/acp/Android.mk make -C $(abs_srcdir)/../android all_modules TARGET_TOOLS_PREFIX=$(prefix)/bin/${cur_target}- TARGET_PRODUCT=aosp_$(TARGET_PLATFORM) WITHOUT_LIBCOMPILER_RT=1 PRIVATE_TARGET_LIBATOMIC="" TARGET_2ND_ARCH="" BUILD_HOST_64bit=true LOCAL_CC=$(abs_srcdir)/../android/prebuilts/clang/linux-x86/host/3.5/bin/clang
 	# Failure allowed: some bits require liblog and friends
