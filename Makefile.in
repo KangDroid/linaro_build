@@ -550,7 +550,7 @@ stmp-patch-libgomp-for-android: patch-libgomp-for-android
 
 # Target compiler: The real compiler, may have libc dependencies
 .PHONY: build-target-gcc install-target-gcc-gcc install-target-gcc
-stmp-config-target-gcc: config.status stmp-install-host-ppl stmp-patch-libgomp-for-android stmp-build-target-binutils
+stmp-config-target-gcc: config.status stmp-install-host-ppl stmp-install-host-gmp stmp-install-host-mpfr stmp-install-host-mpc stmp-install-host-isl stmp-patch-libgomp-for-android stmp-build-target-binutils
 	# We should just call
 	# $(call config-gcc,target,--enable-libgomp)
 	# Unfortunately, the version on make on android-build
