@@ -795,6 +795,7 @@ stmp-config-host-ppl: config.status stmp-install-host-gmp
 	 mkdir ${PPL_VERSION}) && \
 	($(canadian_env) \
 	 cd ${PPL_VERSION} ; \
+	 aclocal ; automake -a ; \
          export CFLAGS="${CFLAGS} -I$(GMP_DIR)/include -L$(GMP_DIR)/lib" ; \
          export CXXFLAGS="${CFLAGS} -I$(GMP_DIR)/include -L$(GMP_DIR)/lib" ; \
 	$(call find-package-srcdir, ${PPL_VERSION})/configure \
