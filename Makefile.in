@@ -474,7 +474,7 @@ endif
 # -include .../sys/limits.h is a workaround for Bionic's ptherad.h requiring
 # LONG_BIT, which usually comes in through limits.h -- but gcc has its own
 # version of that which fails to include sys/limits.h
-CFLAGS_FOR_TARGET += -isystem $(abs_srcdir)/../ndk/current/platforms/android-21/arch-$(TARGET_PLATFORM)/usr/include -include $(abs_srcdir)/../ndk/current/platforms/android-21/arch-$(TARGET_PLATFORM)/usr/include/sys/limits.h
+CFLAGS_FOR_TARGET += -isystem $(abs_srcdir)/../ndk/current/platforms/android-21/arch-$(TARGET_PLATFORM)/usr/include -B$(abs_srcdir)/../ndk/current/platforms/android-21/arch-$(TARGET_PLATFORM)/usr/lib -include $(abs_srcdir)/../ndk/current/platforms/android-21/arch-$(TARGET_PLATFORM)/usr/include/sys/limits.h
 # ARM specific options.
 ifeq ($(target_cpu),arm)
 # Best -mfpu-option for common ARMv7 CPUs:
