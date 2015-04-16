@@ -325,13 +325,22 @@ if [ x"${ARG_WITH_GDB}" != x"" ]; then
   BUILD_WITH_GDB="--with-gdb-version=${ARG_LINARO_GDB_VER}"
 fi
 
-if echo "$BUILD_ARCH" | grep -q '64' ; then
+if [ "$BUILD_ARCH" = "aarch64" ]; then
+  info "Use Aarch64 Build environment"
+  BUILD_HOST=aarch64-linux-gnu
+elif echo "$BUILD_ARCH" |grep -q arm; then
+  info "Use ARM Build environment"
+  BUILD_HOST=arm-linux-gnueabihf
+elif echo "$BUILD_ARCH" | grep -q 'x86_64' ; then
   info "Use 64-bit Build environment"
   BUILD_HOST=x86_64-linux-gnu
   export ABI=64
-else
+elif echo "$BUILD_ARCH" |grep -qE 'i.86'; then
   info "Use 32-bit Build environment"
   BUILD_HOST=i686-unknown-linux-gnu
+else
+  info "Unknown build environment, assuming $BUILD_ARCH-linux-gnu"
+  BUILD_HOST=$BUILD_ARCH-linux-gnu
 fi
 
 [ -z "$TARGET" ] && TARGET=arm-linux-androideabi
