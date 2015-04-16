@@ -320,7 +320,12 @@ if test -f "${gcc_version_file}"; then
   AC_MSG_RESULT([$GCC_MAJOR . $GCC_MINOR])
 else
   AC_MSG_CHECKING([gcc version based on version string ${GCC_VERSION}])
-  if echo ${GCC_VERSION} |grep -qE '^linaro'; then
+  if echo ${GCC_VERSION} |grep -qE '^linaro-snapshot'; then
+    GCC_MAJORMINOR=`echo ${GCC_VERSION} |cut -d- -f3`
+    GCC_MAJOR=`echo ${GCC_MAJORMINOR} |cut -d. -f1`
+    GCC_MINOR=`echo ${GCC_MAJORMINOR} |cut -d. -f2`
+    AC_MSG_RESULT([$GCC_MAJOR . $GCC_MINOR])
+  elif echo ${GCC_VERSION} |grep -qE '^linaro'; then
     GCC_MAJORMINOR=`echo ${GCC_VERSION} |cut -d- -f2`
     GCC_MAJOR=`echo ${GCC_MAJORMINOR} |cut -d. -f1`
     GCC_MINOR=`echo ${GCC_MAJORMINOR} |cut -d. -f2`
@@ -332,8 +337,8 @@ else
     AC_MSG_RESULT([$GCC_MAJOR . $GCC_MINOR])
   else
     # No version file, assume it is trunk
-    GCC_MAJOR=4
-    GCC_MINOR=10
+    GCC_MAJOR=5
+    GCC_MINOR=1
     AC_MSG_RESULT([No version found, assuming trunk])
   fi
 fi
