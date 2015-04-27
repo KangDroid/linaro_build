@@ -184,7 +184,7 @@ getPackage() {
     git:*|ssh://*|http://git.*|https://git.*) # git URL
       downloadFromGIT $package $1 $version
       ;;
-    http://*|https://*) # snapshot URL
+    http://*|https://*|ftp://*) # snapshot URL
       # http://launchpad.net/gcc-linaro/4.5/4.5-2011.04-0/+download/gcc-linaro-4.5-2011.04-0.tar.bz2
       downloadFromHTTP $package $1
       ;;
