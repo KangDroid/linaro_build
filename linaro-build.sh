@@ -315,6 +315,20 @@ if [ "x${ARG_APPLY_PATCH}" = "xyes" ]; then
     fi
   done
   cd -
+
+  sub_binutils_ver="`echo ${BINUTILS_VERSION} |grep -oE '[0-9]*\.[0-9]*(\.[0-9]*)?' |head -n1`"
+  note "Will apply patches in toolchain/binutils-patches/${sub_binutils_ver}"
+  cd ${ARG_TOOLCHAIN_SRC_DIR}/binutils/binutils-${BINUTILS_VERSION} &&
+  for FILE in `ls ${ARG_TOOLCHAIN_SRC_DIR}/binutils-patches/${sub_binutils_ver} 2>/dev/null` ; do
+    if [ ! -f ${FILE}-patch.log ]; then
+      note "Apply patch: ${FILE}"
+      if ! git apply ${ARG_TOOLCHAIN_SRC_DIR}/binutils-patches/${sub_binutils_ver}/${FILE} 2>&1 >"${FILE}-patch.log"; then
+        cat "${FILE}-patch.log"
+        error "${FILE} failed to apply. Please fix."
+      fi
+    fi
+  done
+  cd -
 fi
 
 if [ x"${ARG_WITH_GCC}" != x"" ]; then
