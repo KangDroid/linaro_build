@@ -380,6 +380,15 @@ ${ARG_TOOLCHAIN_SRC_DIR}/build/configure \
 
 make HOSTGCC="$HOSTGCC" && make install
 
+echo "Copying missing libatomic.a"
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/thumb/libatomic.a
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/hard/libatomic.a
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/hard/libatomic.a
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/libatomic.a
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/libatomic.a
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/libatomic.a
+echo "Finished copyig missing libatomic.a"
+
 cat >${ARG_PREFIX_DIR}/BUILD-INFO.txt <<'EOF'
 Files-Pattern: *
 License-Type: open
