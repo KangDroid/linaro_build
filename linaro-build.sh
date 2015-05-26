@@ -381,12 +381,19 @@ ${ARG_TOOLCHAIN_SRC_DIR}/build/configure \
 make HOSTGCC="$HOSTGCC" && make install
 
 echo "Copying missing libatomic.a"
-install -d $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/thumb/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/thumb/libatomic.a
-install -d $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/hard/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/hard/libatomic.a
-install -d $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/hard/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/hard/libatomic.a
-install -d $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/libatomic.a 
-install -d $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/libatomic.a
-install -d $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/libatomic.a
+mkdir -p ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/thumb/
+mkdir -p ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/hard/
+mkdir -p ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/hard/
+mkdir -p ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/
+mkdir -p ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/
+mkdir -p ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/
+
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/thumb/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/thumb/libatomic.a
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/hard/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/hard/libatomic.a
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/hard/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/hard/libatomic.a
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/thumb/libatomic.a 
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/armv7-a/libatomic.a
+cp $ARG_TOOLCHAIN_SRC_DIR/build/missing/lib/gcc/arm-linux-androideabi/6.0.0/libatomic.a ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/libatomic.a
 echo "Finished copyig missing libatomic.a"
 
 cat >${ARG_PREFIX_DIR}/BUILD-INFO.txt <<'EOF'
