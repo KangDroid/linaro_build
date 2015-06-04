@@ -22,7 +22,7 @@ ARG_WITH_GCC=
 ARG_WITH_GDB=
 ARG_WITH_SYSROOT=
 
-ARG_APPLY_PATCH=yes
+ARG_APPLY_PATCH=no
 
 abort() {
   echo $@
