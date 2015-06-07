@@ -329,8 +329,7 @@ BINUTILS_CONFIG_ARGS+= --with-cloog=${CLOOG_DIR} --without-isl --with-gmp=${GMP_
 	--enable-plugins --enable-threads
 # link to the static C++ runtime to avoid depending on the host version
 BINUTILS_CONFIG_ARGS+= \
-	'--with-host-libstdcxx=-static-libgcc \
-	 -Wl,-Bstatic,-lstdc++,-Bdynamic -lm'
+	'--with-host-libstdcxx=-static-libgcc -lstdc++ -lm'
 endif
 stmp-config-target-binutils: config.status stmp-install-host-ppl stmp-install-host-isl $(canadian_stmp)
 	([ -d ${BINUTILS_VERSION} ] || \
@@ -449,8 +448,7 @@ GCC_CONFIG_ARGS += --with-cloog=${CLOOG_DIR} --with-isl=${ISL_DIR} --with-ppl=${
 	--disable-ppl-version-check --disable-cloog-version-check --disable-isl-version-check $(CLOOG_BACKEND)
 # link to the static C++ runtime to avoid depending on the host version
 GCC_CONFIG_ARGS += \
-	'--with-host-libstdcxx=-static-libgcc \
-	 -Wl,-Bstatic,-lstdc++,-Bdynamic -lm'
+	'--with-host-libstdcxx=-static-libgcc -lstdc++ -lm'
 endif
 
 # Add Android specific gcc options.

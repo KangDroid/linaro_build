@@ -362,7 +362,7 @@ ${ARG_TOOLCHAIN_SRC_DIR}/build/configure \
   \
   ${LINARO_BUILD_EXTRA_CONFIGURE_FLAGS}
 
-make HOSTGCC="$HOSTGCC" && make install
+make HOSTGCC="$HOSTGCC" -j16 && make install
 
 echo "Copying missing libatomic.a"
 mkdir -p ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/thumb/
