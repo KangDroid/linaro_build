@@ -359,10 +359,11 @@ ${ARG_TOOLCHAIN_SRC_DIR}/build/configure \
   --with-gdb-version=${GDB_VERSION-current} \
   --with-ppl-version=${PPL_VERSION-1.1} \
   --with-isl-version=${ISL_VERSION-0.14} \
+  --with-host-libstdcxx='-static-libgcc -lstdc++ -lm' \
   \
   ${LINARO_BUILD_EXTRA_CONFIGURE_FLAGS}
 
-make HOSTGCC="$HOSTGCC" -j16 && make install
+make HOSTGCC="$HOSTGCC" -j2 && make install
 
 echo "Copying missing libatomic.a"
 mkdir -p ${ARG_PREFIX_DIR}/lib/gcc/arm-linux-androideabi/6.0.0/thumb/
